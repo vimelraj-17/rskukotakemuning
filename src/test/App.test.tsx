@@ -1,4 +1,6 @@
 import { render, screen } from '@testing-library/react'
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { App } from '../App'
 
@@ -38,5 +40,19 @@ describe('App', () => {
     expect(menu).toHaveFocus()
     expect(screen.getByRole('radio', { name: /1,000 sq ft layout/i })).toHaveAccessibleName()
     expect(screen.getByRole('button', { name: /Continue to packages/i })).toBeDisabled()
+  })
+
+  it('has no broken internal section links or bundled image references', () => {
+    render(<App />)
+
+    document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((link) => {
+      const target = link.getAttribute('href')!
+      expect(document.querySelector(target), `${target} should resolve to an element`).not.toBeNull()
+    })
+
+    document.querySelectorAll<HTMLImageElement>('img[src]').forEach((image) => {
+      const pathname = new URL(image.src).pathname.replace(/^\/rskukotakemuning\//, '/')
+      expect(existsSync(resolve('public', pathname.replace(/^\//, ''))), `${pathname} should exist`).toBe(true)
+    })
   })
 })

@@ -33,6 +33,7 @@ export function MortgageCalculator({ propertyPrice: selectedPropertyPrice, packa
   const { loanMargin, interestRate, tenure } = assumptions
   const propertyPrice = propertyDraft.source === selectedPropertyPrice ? propertyDraft.value : String(selectedPropertyPrice)
   const packagePrice = packageDraft.source === selectedPackagePrice ? packageDraft.value : String(selectedPackagePrice)
+  const confirmedSelectionTotal = selectedPropertyPrice + selectedPackagePrice
 
   const estimate = useMemo(() => calculateMortgage({
     propertyPrice: parseMortgageInput(propertyPrice),
@@ -61,6 +62,6 @@ export function MortgageCalculator({ propertyPrice: selectedPropertyPrice, packa
       {estimate ? <dl className="mortgage-results" aria-live="polite"><div><dt>Total estimated purchase price</dt><dd>{formatMyr(estimate.totalPurchasePrice)}</dd></div><div><dt>Loan amount</dt><dd>{formatMyr(estimate.loanAmount)}</dd></div><div><dt>Estimated down payment</dt><dd>{formatMyr(estimate.downPayment)}</dd></div><div className="mortgage-primary"><dt>Estimated monthly payment</dt><dd>{formatMyr(estimate.monthlyPayment)}</dd></div><div><dt>Estimated total interest</dt><dd>{formatMyr(estimate.totalInterest)}</dd></div></dl> : <div className="mortgage-error" role="alert"><strong>Enter valid calculator values.</strong><p>Prices and rates cannot be negative. Loan margin must be 0–100%, and tenure must be 1–50 years.</p></div>}
     </div>
     <aside className="mortgage-disclaimer"><strong>Illustration only — not a loan offer.</strong><p>Bank approval, effective rates, insurance, legal fees and other charges may differ. Confirm all financing terms with an authorised bank or representative.</p></aside>
-    <WhatsAppEnquiry phoneNumber={phoneNumber} enquiry={estimate ? { ...enquiry, estimatedTotalPrice: formatMyr(estimate.totalPurchasePrice), estimatedMonthlyPayment: formatMyr(estimate.monthlyPayment) } : null} />
+    <WhatsAppEnquiry phoneNumber={phoneNumber} enquiry={estimate ? { ...enquiry, estimatedTotalPrice: formatMyr(confirmedSelectionTotal), estimatedMonthlyPayment: formatMyr(estimate.monthlyPayment) } : null} />
   </section>
 }
