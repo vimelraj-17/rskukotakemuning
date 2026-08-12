@@ -11,7 +11,7 @@ function cloneData(): PropertyData {
 }
 
 describe('validatePropertyData', () => {
-  it('accepts the bundled demo dataset', () => {
+  it('accepts the bundled production dataset', () => {
     expect(validatePropertyData(propertyData)).toEqual({ valid: true, errors: [] })
     expect(() => assertValidPropertyData(propertyData)).not.toThrow()
   })
@@ -23,6 +23,25 @@ describe('validatePropertyData', () => {
     expect(validatePropertyData(data).errors).toContainEqual(
       expect.objectContaining({ code: 'DUPLICATE_UNIT_ID' }),
     )
+  })
+
+  it('detects malformed current unit IDs and parking bay collisions', () => {
+    const data = cloneData()
+    data.units = [
+      { ...data.units[0]!, id: 'B-99-99' },
+      {
+        ...data.units[1]!,
+        parking: {
+          ...data.units[1]!.parking,
+          bayNumbers: [data.units[0]!.parking.bayNumbers[0], 'BAD-BAY'],
+        },
+      },
+    ]
+
+    const codes = validatePropertyData(data).errors.map((error) => error.code)
+    expect(codes).toContain('INVALID_UNIT_ID')
+    expect(codes).toContain('DUPLICATE_PARKING_BAY')
+    expect(codes).toContain('INVALID_PARKING_BAY')
   })
 
   it('detects unit and package references to missing layouts', () => {
@@ -105,6 +124,7 @@ describe('validatePropertyData', () => {
       { ...data.units[0]!, compatiblePackageIds: [] },
       {
         ...data.units[1]!,
+        basePriceMyr: 275000,
         compatiblePackageIds: ['a-basic'],
       },
     ]

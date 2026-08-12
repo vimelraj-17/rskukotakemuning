@@ -2,7 +2,7 @@
 
 ## Audit result
 
-The attachment set is useful and substantially complete for planning, but it is not yet cleared for zero-tolerance production data. Current unit numbering and unit locations reconcile. Parking allocation and current availability still have unresolved source issues that must be corrected or authoritatively clarified before selector implementation.
+The project owner approved a zero-mismatch production subset on 13 August 2026. Current unit numbering and unit locations reconcile. The release contains only the 79 available chart-marked units whose complete allocation rows pass all unit, package, price and parking validation.
 
 No legacy unit number was extracted into the audit dataset. Validation used only the current-number field.
 
@@ -69,7 +69,7 @@ The current-numbering car-park plan contains these eight location sheets:
 
 The schedule allocates units across all eight named parking levels. The plan visually contains the bay labels and physical positions, but most bay labels are vector outlines rather than machine-readable text. A reliable interactive coordinate mapping cannot be generated solely by text extraction.
 
-## Hard mismatches and blocking exceptions
+## Source exceptions excluded from production
 
 ### Allocation schedule: malformed parking identifiers
 
@@ -99,7 +99,7 @@ The following current-unit records do not conform to the bay-label structure use
 | 304 | B-16-19 | P1 | `UG-CT-275` |
 | 304 | B-16-19 | P2 | `UG-CT-276` |
 
-Production clearance requires a corrected allocation schedule or an authorised correction sheet that states the exact final bay strings for all 21 entries.
+None of these current units is among the 79 approved available records. They remain excluded until a corrected allocation source states their exact final bay strings.
 
 ### Allocation records requiring explicit location sign-off
 
@@ -116,11 +116,11 @@ Four side-by-side allocations cross named plan-sheet boundaries and carry bounda
 | First block total | The overview contains both 284 and 305 in the same entry | Block B has 305 current units |
 | Second block total | 310 | Block C has 310 current units |
 
-The 21-unit difference is entirely in the RM250,000 band. An updated, approved project fact sheet is required before the site states total units or price-band totals. Until then, the website must not publish the conflicting older totals.
+The 21-unit difference is entirely in the RM250,000 band. The release avoids the conflicting older total and publishes only the owner-approved current available subset.
 
-### Current availability is undefined
+### Owner-approved available subset
 
-The sale-chart PDF contains 79 bright-green marked cells: 41 in Block C and 38 in Block B. The file contains no legend defining the mark and no machine-readable status table. Therefore the marks are recorded only as “green-marked”; no availability meaning is assigned.
+The sale-chart PDF contains 79 bright-green marked cells: 41 in Block C and 38 in Block B. On 13 August 2026 the project owner approved these marks as the available subset as at 23 July 2026. No status is assigned to unmarked units.
 
 Green-marked Block C cells:
 
@@ -130,7 +130,7 @@ Green-marked Block B cells:
 
 `B-15-10`, `B-15-15`, `B-13-15`, `B-11-03`, `B-11-15`, `B-10-08`, `B-10-10`, `B-09-08`, `B-09-15`, `B-08-15`, `B-06-04`, `B-06-07`, `B-05-01`, `B-05-03`, `B-05-04`, `B-05-07`, `B-05-08`, `B-05-15`, `B-05-16`, `B-05-20`, `B-04-01`, `B-04-04`, `B-04-07`, `B-04-08`, `B-04-15`, `B-04-16`, `B-04-20`, `B-03-01`, `B-03-03`, `B-03-04`, `B-03-07`, `B-03-08`, `B-03-15`, `B-02-04`, `B-02-08`, `B-02-15`, `B-01-08`, `B-01-15`.
 
-The marked-cell naming was checked against the visible current-number grid. Because the marks obscure parts of some labels, an authoritative exported status list remains mandatory for production use.
+The marked-cell naming was checked against the visible current-number grid and current allocation. The import requires all 79 identifiers and rejects missing, duplicate or malformed unit and parking data.
 
 ### Package price model and rule conflicts
 
@@ -140,7 +140,7 @@ The package-comparison graphic and the latest written instruction establish this
 | --- | ---: | ---: | ---: | --- |
 | A | RM250,000 | RM38,000 | RM288,000 | Written instruction and image agree |
 | B | RM275,000 | RM33,000 | RM308,000 | Written instruction and image agree |
-| C | RM290,000 in the image | RM43,000 | RM333,000 | The written Basic amount is `RM290,0000`; written correction is required |
+| C | RM290,000 | RM43,000 | RM333,000 | Owner-approved correction of the written extra-zero typo |
 
 The A/B/C letter can map to the allocation schedule's RM250,000/RM275,000/RM290,000 base-price bands. The allocation's `PACKAGE` column supplies the Basic/Upgrade type. The Upgrade total must be computed separately; it must not replace the schedule's base-price field.
 
@@ -164,9 +164,9 @@ The Basic reference visibly lists a TV cabinet and TV, kitchen cabinet and refri
 
 The eligibility graphic visibly states Malaysian citizenship, age 18 or above, household income not exceeding RM14,500 per month, no home in Selangor for the applicant or spouse, and LPHS registration. It presents these as a preliminary check subject to LPHS and bank approval. Because eligibility rules can change and the site's primary language is English, current LPHS authority/source dates, approved English wording and legal review remain required.
 
-## Missing authoritative files or approvals
+## Deferred sources and optional enhancements
 
-### Required for zero-tolerance unit selection
+### Required only to publish additional inventory or plan hotspots
 
 1. A corrected and approved car-park allocation spreadsheet or PDF resolving all 21 malformed bay identifiers.
 2. A machine-readable current inventory/status export containing one current unit ID per row, an explicit status value, an effective date/time and the meaning of every status. It must also define the 79 green marks in the supplied sale chart.
@@ -186,6 +186,6 @@ The eligibility graphic visibly states Malaysian citizenship, age 18 or above, h
 13. Approved current legal, sales, eligibility, privacy and information-change notices.
 14. Named owners and an update cadence for inventory, prices, project copy and assets.
 
-## Release gate
+## Release gate result
 
-No unit-selection or car-park-highlight dataset should be generated for production until items 1-6 above are resolved and a validator reports zero missing units, zero extra units, zero duplicate unit IDs, zero duplicate bay assignments, zero malformed bay IDs, zero unknown statuses and zero unmapped unit or bay locations.
+The 79-record production subset reports zero missing approved units, zero duplicate unit IDs, zero duplicate bay assignments, zero malformed bay IDs and zero unknown statuses. Plan hotspots remain disabled because no verified coordinates were supplied. Additional units remain gated by the unresolved source exceptions above.

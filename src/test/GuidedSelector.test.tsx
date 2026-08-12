@@ -4,8 +4,8 @@ import { GuidedSelector } from '../components/GuidedSelector'
 import { propertyData } from '../data/propertyData'
 import { selectionStorageKey } from '../utils/selection'
 
-function renderSelector() {
-  return render(<GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} units={propertyData.units} dataLabel={propertyData.metadata.label} dataNotice={propertyData.metadata.notice} projectName={propertyData.project.name} whatsAppNumber={propertyData.project.whatsAppNumber} />)
+function renderSelector(units = propertyData.units) {
+  return render(<GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} units={units} dataLabel={propertyData.metadata.label} dataNotice={propertyData.metadata.notice} projectName={propertyData.project.name} whatsAppNumber={propertyData.project.whatsAppNumber} />)
 }
 
 describe('GuidedSelector', () => {
@@ -62,49 +62,49 @@ describe('GuidedSelector', () => {
   })
 
   it('selects available units while reserved units remain visible and disabled', () => {
-    renderSelector()
+    const reservedUnit = { ...propertyData.units[0]!, id: 'TEST-RESERVED-01', availabilityStatus: 'held' as const }
+    renderSelector([...propertyData.units, reservedUnit])
     fireEvent.click(screen.getByRole('radio', { name: /1,000 sq ft layout/i }))
     fireEvent.click(screen.getByRole('button', { name: /Continue to packages/i }))
-    fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /Package A Upgrade/i }))
     fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
 
-    const available = screen.getByRole('radio', { name: /DEMO-B-01-01/i })
+    const available = screen.getByRole('radio', { name: /B-01-08/i })
     fireEvent.click(available)
     expect(available).toBeChecked()
 
-    fireEvent.change(screen.getByLabelText('Package compatibility'), { target: { value: 'b-basic' } })
-    expect(screen.getByRole('radio', { name: /DEMO-B-06-01/i })).toBeDisabled()
+    expect(screen.getByRole('radio', { name: /TEST-RESERVED-01/i })).toBeDisabled()
     expect(screen.getByText('Reserved', { selector: '.unit-status' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Review selection/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /Review selection/i })).toBeEnabled()
   })
 
   it('filters units and offers a reset when no results match', () => {
     renderSelector()
     fireEvent.click(screen.getByRole('radio', { name: /1,000 sq ft layout/i }))
     fireEvent.click(screen.getByRole('button', { name: /Continue to packages/i }))
-    fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /Package A Upgrade/i }))
     fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
-    fireEvent.change(screen.getByLabelText('Level'), { target: { value: '6' } })
+    fireEvent.change(screen.getByLabelText('Level'), { target: { value: '17' } })
     expect(screen.getByRole('heading', { name: /No units match/i })).toBeInTheDocument()
     fireEvent.click(screen.getAllByRole('button', { name: 'Reset filters' })[1]!)
-    expect(screen.getByRole('radio', { name: /DEMO-B-01-01/i })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: /B-01-08/i })).toBeInTheDocument()
   })
 
   it('clears an incompatible unit and returns to package choice after a layout change', () => {
     renderSelector()
     fireEvent.click(screen.getByRole('radio', { name: /1,000 sq ft layout/i }))
     fireEvent.click(screen.getByRole('button', { name: /Continue to packages/i }))
-    fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /Package A Upgrade/i }))
     fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
-    fireEvent.click(screen.getByRole('radio', { name: /DEMO-B-01-01/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /B-01-08/i }))
 
     fireEvent.change(screen.getByLabelText('Layout'), { target: { value: 'layout-1080' } })
     expect(screen.getByRole('heading', { name: 'Choose your package' })).toBeInTheDocument()
     expect(JSON.parse(window.localStorage.getItem(selectionStorageKey)!)).toMatchObject({ unitId: null })
   })
 
-  it('shows calculated totals and preserves compatible choices while editing', () => {
-    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+  it('shows calculated totals and clears an incompatible unit when the package changes', () => {
+    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=B-01-08')
     renderSelector()
     expect(screen.getByRole('heading', { name: 'Your selection summary' })).toBeInTheDocument()
     expect(screen.getAllByText(/RM\s*288,000/)).not.toHaveLength(0)
@@ -112,33 +112,37 @@ describe('GuidedSelector', () => {
     expect(screen.getByRole('radio', { name: /Package A Upgrade/i })).toBeChecked()
     fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
     fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
-    expect(screen.getByRole('radio', { name: /DEMO-B-01-01/i })).toBeChecked()
+    expect(screen.queryByRole('radio', { name: /B-01-08/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Review selection/i })).toBeDisabled()
   })
 
   it('keeps loan assumptions while refreshing selected package pricing', () => {
-    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=B-01-08')
     renderSelector()
     fireEvent.change(screen.getByLabelText('Annual interest rate (%)'), { target: { value: '5.5' } })
     fireEvent.click(screen.getByRole('button', { name: 'Change package' }))
-    fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Back/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to packages/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /Package A Upgrade/i }))
     fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /B-01-08/i }))
     fireEvent.click(screen.getByRole('button', { name: /Review selection/i }))
-    expect(screen.getByLabelText('Package price (MYR)')).toHaveValue(0)
+    expect(screen.getByLabelText('Package price (MYR)')).toHaveValue(38000)
     expect(screen.getByLabelText('Annual interest rate (%)')).toHaveValue(5.5)
   })
 
   it('copies the summary with a validated share URL', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined)
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } })
-    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=B-01-08')
     renderSelector()
     fireEvent.click(screen.getByRole('button', { name: 'Copy summary and share link' }))
     await screen.findByText('Summary and share link copied.')
-    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01'))
+    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('layout=layout-1000&package=a-upgrade&unit=B-01-08'))
   })
 
   it('ignores invalid query parameters and falls back safely', () => {
-    window.localStorage.setItem(selectionStorageKey, JSON.stringify({ layoutId: 'layout-1000', packageId: 'a-basic', unitId: null }))
+    window.localStorage.setItem(selectionStorageKey, JSON.stringify({ layoutId: 'layout-1000', packageId: 'a-upgrade', unitId: null }))
     window.history.replaceState({}, '', '/?layout=layout-1000&package=missing&unit=bad')
     renderSelector()
     expect(screen.getByRole('heading', { name: 'Choose your package' })).toBeInTheDocument()
@@ -146,21 +150,26 @@ describe('GuidedSelector', () => {
   })
 
   it('includes the current selection and mortgage estimate in WhatsApp', () => {
-    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=B-01-08')
     renderSelector()
     const link = screen.getByRole('link', { name: /Enquire on WhatsApp/i })
     const url = new URL(link.getAttribute('href')!)
     expect(url.origin + url.pathname).toBe('https://wa.me/60172062979')
     const message = decodeURIComponent(url.searchParams.get('text')!)
     expect(message).toContain('Residensi Lestari Fasa 2')
-    expect(message).toContain('Unit ID: DEMO-B-01-01')
+    expect(message).toContain('Unit Number: B-01-08')
     expect(message).toContain('Block B, Level 1')
     expect(message).toContain('1,000 sq ft layout, 1,000 sq ft')
     expect(message).toContain('Package A Upgrade')
+    expect(message).toContain('PackageType: Upgrade')
+    expect(message).toContain('Package: A')
+    expect(message).toContain('Carpark Number: 1A-CT-B273 / 1A-CT-B274')
+    expect(message).toContain('Carpark type: Covered')
+    expect(message).toContain('Carpark Orientation: Tandem')
     expect(message).toMatch(/Estimated total price: RM\s*288,000/)
     expect(message).toMatch(/Estimated monthly mortgage payment: RM\s*1,179/)
     expect(message).toContain('Please confirm the current availability')
-    expect(message).toContain('layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+    expect(message).toContain('layout=layout-1000&package=a-upgrade&unit=B-01-08')
     expect(link).toHaveAttribute('target', '_blank')
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   })

@@ -1,6 +1,6 @@
 # Residensi Lestari Fasa 2 property selector
 
-Responsive property information and unit-selection experience for Residensi Lestari Fasa 2. Production inventory remains blocked by the exceptions in `SOURCE_RECONCILIATION_REPORT.md`; the selector currently uses three clearly labelled synthetic records.
+Responsive property information and unit-selection experience for Residensi Lestari Fasa 2. The production dataset contains 79 owner-approved available units as at 23 July 2026. Each published unit is reconciled to the current unit-number allocation and current car park plans.
 
 The original `READ ME` note is preserved.
 
@@ -34,9 +34,9 @@ The website keeps public content in a few central files so wording and data are 
 | Package pricing and inclusions | `src/data/packages.ts` | Keep base price, upgrade addition and total internally consistent. A package must refer to an existing layout ID. |
 | Facilities, location and eligibility | `src/data/facilities.ts`, `location.ts`, `eligibility.ts` | Publish only approved information. Keep qualification wording framed as preliminary. |
 | Images used on the page | `public/images` and `src/data/brochure.ts` | Prefer compressed WebP images. If the filename changes, update the corresponding `image` value and write useful alternative text in `imageAlt`. |
-| Unit inventory | `src/data/units.demo.ts` | Do **not** replace this by hand with production inventory. Use the CSV handoff below and complete reconciliation first. |
+| Unit inventory | `src/data/units.ts` | Do **not** hand-edit identifiers. Re-import from the approved allocation source and validate before publishing. |
 
-For additional units, fill in `data/templates/units-template.csv` using the instructions in `data/templates/UNITS_CSV_TEMPLATE.md`. Give the completed file to the developer for validation and import. Unit IDs, unit positions, car-park bays, car-park levels, types and orientations must match the approved source records exactly.
+To regenerate the approved inventory, run `node scripts/import-approved-units.mjs "/path/to/approved-allocation.pdf"`. For additional units, fill in `data/templates/units-template.csv` using `data/templates/UNITS_CSV_TEMPLATE.md`, then complete the same zero-tolerance reconciliation.
 
 After any content change, run:
 
@@ -53,7 +53,7 @@ Do not publish if any command fails. Merge the approved feature branch into `mai
 ## Structure
 
 - `src/components` — reusable interface components
-- `src/data` — structured confirmed, pending-approval and demo project data
+- `src/data` — structured approved project and inventory data
 - `src/types` — reusable property-domain types
 - `src/styles` — design tokens and responsive global styles
 - `src/utils` — framework-independent helpers
@@ -67,12 +67,10 @@ The experience intentionally uses one document with section anchors and no clien
 
 ## Data safety
 
-Do not add production unit, availability or parking-highlight data until all blocking exceptions in the source reconciliation report are resolved. Never ingest the red legacy-number field from the current car-park allocation schedule.
+Never ingest the red legacy-number field from the current car-park allocation schedule. The production importer captures only current unit identifiers and later fields, requires the 79 approved chart-marked records, and rejects duplicate or malformed unit/parking data.
 
-The current inventory layer runs in `DEMO DATA` mode with three synthetic unit records; the selector identifies them as synthetic and says they cannot be reserved. See `data/templates/UNITS_CSV_TEMPLATE.md` and `data/templates/units-template.csv` for the unit-import handoff format. Run-time cross-record checks live in `src/utils/validatePropertyData.ts` and must pass before any dataset is published.
-
-The brochure uses optimized copies of supplied project renders in `public/images`. Each render is described as an artist's impression. Approved standalone floor plans and a verified location map are represented by accessible placeholder blocks until authoritative assets arrive.
+The brochure uses optimized copies of owner-approved project renders, floor plans and the location diagram in `public/images`. Artist-impression and confirmation notices remain visible.
 
 The guided selector reads layouts, packages, compatibility, inclusions and pricing from `src/data`. Valid layout/package choices are stored under `residensi-lestari-selection-v1`; unknown or incompatible saved values are removed before use.
 
-See `PRELAUNCH_QA.md` for the final checkpoint coverage, results, environment limitation and remaining launch blockers.
+See `PRELAUNCH_QA.md` for final release coverage and reconciliation evidence.

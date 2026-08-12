@@ -34,7 +34,7 @@ describe('pre-launch visitor journey', () => {
     fireEvent.change(screen.getByLabelText('Block'), { target: { value: 'B' } })
     fireEvent.change(screen.getByLabelText('Maximum price'), { target: { value: '250000' } })
     fireEvent.change(screen.getByLabelText('Availability'), { target: { value: 'available' } })
-    const availableUnit = screen.getByRole('radio', { name: /DEMO-B-01-01/i })
+    const availableUnit = screen.getByRole('radio', { name: /B-01-08/i })
     expect(availableUnit).toBeEnabled()
     fireEvent.click(availableUnit)
     fireEvent.click(screen.getByRole('button', { name: /Review selection/i }))
@@ -53,18 +53,18 @@ describe('pre-launch visitor journey', () => {
     expect(enquiry.link).toHaveAttribute('target', '_blank')
     expect(enquiry.link).toHaveAttribute('rel', 'noopener noreferrer')
     expect(enquiry.message).toContain(`Estimated total price: ${summaryTotal}`)
-    expect(enquiry.message).toContain('Unit ID: DEMO-B-01-01')
+    expect(enquiry.message).toContain('Unit Number: B-01-08')
     expect(enquiry.message).toContain('Package A Upgrade')
     expect(enquiry.message).toContain('Please confirm the current availability')
 
     const storedSelection = JSON.parse(window.localStorage.getItem(selectionStorageKey)!)
-    expect(storedSelection).toEqual({ layoutId: 'layout-1000', packageId: 'a-upgrade', unitId: 'DEMO-B-01-01' })
+    expect(storedSelection).toEqual({ layoutId: 'layout-1000', packageId: 'a-upgrade', unitId: 'B-01-08' })
 
     // Refresh restores the selection from local storage.
     firstRender.unmount()
     const refreshed = render(<App />)
     expect(screen.getByRole('heading', { name: 'Your selection summary' })).toBeInTheDocument()
-    expect(screen.getByText('DEMO-B-01-01')).toBeInTheDocument()
+    expect(screen.getByText('B-01-08')).toBeInTheDocument()
 
     // A clean browser can open the validated shared configuration URL.
     const configurationLine = getWhatsAppMessage().message.split('\n').find((line) => line.startsWith('Selected configuration: '))!
@@ -74,21 +74,8 @@ describe('pre-launch visitor journey', () => {
     window.history.replaceState({}, '', `${sharedUrl.pathname}${sharedUrl.search}`)
     render(<App />)
     expect(screen.getByRole('heading', { name: 'Your selection summary' })).toBeInTheDocument()
-    expect(screen.getByText('DEMO-B-01-01')).toBeInTheDocument()
+    expect(screen.getByText('B-01-08')).toBeInTheDocument()
     expect(screen.getByText('Package A Upgrade')).toBeInTheDocument()
   })
 
-  it('keeps a sold unit visible but impossible to select', () => {
-    render(<App />)
-    fireEvent.click(screen.getByRole('radio', { name: /1,080 sq ft layout/i }))
-    fireEvent.click(screen.getByRole('button', { name: /Continue to packages/i }))
-    fireEvent.click(screen.getByRole('radio', { name: /Package C Basic/i }))
-    fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
-
-    const soldUnit = screen.getByRole('radio', { name: /DEMO-C-01-01/i })
-    expect(soldUnit).toBeVisible()
-    expect(soldUnit).toBeDisabled()
-    expect(soldUnit).not.toBeChecked()
-    expect(screen.getByRole('button', { name: /Review selection/i })).toBeDisabled()
-  })
 })

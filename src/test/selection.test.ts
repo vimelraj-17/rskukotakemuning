@@ -19,8 +19,8 @@ describe('selection compatibility rules', () => {
   })
 
   it('validates query parameters and creates an encoded share URL', () => {
-    expect(readSelectionFromSearch('?layout=layout-1000&package=a-basic&unit=DEMO-B-01-01', propertyData.layouts, propertyData.packages, propertyData.units)).toEqual({ layoutId: 'layout-1000', packageId: 'a-basic', unitId: 'DEMO-B-01-01' })
+    expect(readSelectionFromSearch('?layout=layout-1000&package=a-upgrade&unit=B-01-08', propertyData.layouts, propertyData.packages, propertyData.units)).toEqual({ layoutId: 'layout-1000', packageId: 'a-upgrade', unitId: 'B-01-08' })
     expect(readSelectionFromSearch('?layout=layout-1000&package=bad&unit=bad', propertyData.layouts, propertyData.packages, propertyData.units)).toBeNull()
-    expect(createShareUrl({ layoutId: 'layout-1000', packageId: 'a-basic', unitId: 'DEMO-B-01-01' }, window.location)).toContain('layout=layout-1000&package=a-basic&unit=DEMO-B-01-01')
+    expect(createShareUrl({ layoutId: 'layout-1000', packageId: 'a-upgrade', unitId: 'B-01-08' }, window.location)).toContain('layout=layout-1000&package=a-upgrade&unit=B-01-08')
   })
 })

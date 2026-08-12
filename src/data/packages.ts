@@ -36,7 +36,7 @@ export const packages: readonly PackageDefinition[] = (
     totalPriceMyr: pricing.basePriceMyr,
     compatibleLayoutIds: [pricing.layoutId],
     inclusions: basicInclusions,
-    classification: 'pending-approval',
+    classification: 'confirmed',
   },
   {
     id: `${letter.toLowerCase()}-upgrade`,
@@ -48,6 +48,6 @@ export const packages: readonly PackageDefinition[] = (
     totalPriceMyr: pricing.basePriceMyr + pricing.upgradeAdditionMyr,
     compatibleLayoutIds: [pricing.layoutId],
     inclusions: [...basicInclusions, ...upgradeInclusions[letter]],
-    classification: 'pending-approval',
+    classification: 'confirmed',
   },
 ])

@@ -1,6 +1,6 @@
 # Unit CSV template
 
-Use `units-template.csv` to supply additional units. The included row is an example only and must be deleted or replaced; its `DEMO-` identifiers are not project records.
+Use `units-template.csv` to supply additional units. It contains headers only; add one current-number unit per row.
 
 Save the completed file as UTF-8 CSV. Keep one current unit per row. Never include the allocation schedule's red legacy-number column or any historical unit-number alias.
 
@@ -37,4 +37,4 @@ Save the completed file as UTF-8 CSV. Keep one current unit per row. Never inclu
 - Availability status must use the supported vocabulary exactly.
 - Each unit must reference at least one package. Every referenced package must list the unit's layout as compatible and carry the same base price.
 - Parking identifiers and locations must match the final approved allocation and plan sources exactly.
-- A zero-tolerance validation run must pass before the data can replace `src/data/units.demo.ts`.
+- A zero-tolerance validation run must pass before records can be added to `src/data/units.ts`.

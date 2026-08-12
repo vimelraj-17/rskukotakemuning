@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Layout, PackageDefinition, Unit } from '../types/property'
 import { formatMyr } from '../utils/formatMyr'
+import { assetUrl } from '../utils/assetUrl'
 import { emptyUnitFilters, filterUnits, isUnitSelectable, type UnitFilters } from '../utils/filterUnits'
 import { SelectionSummary } from './SelectionSummary'
 import {
@@ -108,7 +109,7 @@ export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice
                 return (
                   <label className="choice-card layout-choice" data-selected={selected} key={layout.id}>
                     <input type="radio" name="layout" value={layout.id} checked={selected} onChange={() => selectLayout(layout.id)} />
-                    <div className="selector-placeholder" role="img" aria-label={`${layout.name} plan image pending approval`}><span>{layout.sizeSqFt.toLocaleString('en-MY')}</span><small>sq ft plan</small></div>
+                    <div className="plan-scroll"><img src={assetUrl(layout.planAsset!)} alt={`Typical ${layout.sizeSqFt.toLocaleString('en-MY')} sq ft floor plan`} width="1600" height="1142" loading="lazy" decoding="async" /></div>
                     <div className="choice-content"><span className="choice-kicker">{layout.name}</span><h4>{layout.sizeSqFt.toLocaleString('en-MY')} sq ft</h4><dl><div><dt>Bedrooms</dt><dd>{layout.bedrooms ?? 'TBC'}</dd></div><div><dt>Bathrooms</dt><dd>{layout.bathrooms ?? 'TBC'}</dd></div></dl><ul>{layout.features.map((feature) => <li key={feature}>{feature}</li>)}</ul><p>From <strong>{formatMyr(layout.startingPriceMyr)}</strong></p></div>
                     <span className="selected-badge">{selected ? 'Selected' : 'Select layout'}</span>
                   </label>
@@ -143,7 +144,7 @@ export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice
         ) : step === 3 ? (
           <div className="selector-step unit-step" aria-labelledby="unit-step-title">
             <div><span>Step 3 of 3</span><h3 id="unit-step-title">Choose your unit</h3><p>{selectedLayout?.name} · {selectedPackage?.name}</p></div>
-            <aside className="demo-notice" aria-label={dataLabel}><strong>{dataLabel}</strong><p>{dataNotice}</p></aside>
+            <aside className="availability-notice" aria-label={dataLabel}><strong>{dataLabel}</strong><p>{dataNotice}</p></aside>
             <form className="unit-filters" onSubmit={(event) => event.preventDefault()}>
               <label>Block<select value={filters.block} onChange={(event) => updateFilter('block', event.target.value)}><option value="">All blocks</option>{blocks.map((block) => <option key={block}>{block}</option>)}</select></label>
               <label>Level<select value={filters.level} onChange={(event) => updateFilter('level', event.target.value)}><option value="">All levels</option>{levels.map((level) => <option key={level}>{level}</option>)}</select></label>

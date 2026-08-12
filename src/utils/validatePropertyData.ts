@@ -10,6 +10,9 @@ export type ValidationErrorCode =
   | 'MISSING_PACKAGE'
   | 'INVALID_PRICE'
   | 'INVALID_STATUS'
+  | 'INVALID_UNIT_ID'
+  | 'INVALID_PARKING_BAY'
+  | 'DUPLICATE_PARKING_BAY'
   | 'BROKEN_COMPATIBILITY_REFERENCE'
 
 export interface ValidationError {
@@ -38,6 +41,7 @@ export function validatePropertyData(data: PropertyData): ValidationResult {
   const layoutIds = new Set(data.layouts.map((layout) => layout.id))
   const packageById = new Map(data.packages.map((item) => [item.id, item]))
   const seenUnitIds = new Set<string>()
+  const seenParkingBays = new Set<string>()
 
   data.layouts.forEach((layout, layoutIndex) => {
     if (!isValidPrice(layout.startingPriceMyr)) {
@@ -88,6 +92,34 @@ export function validatePropertyData(data: PropertyData): ValidationResult {
       })
     }
     seenUnitIds.add(unit.id)
+
+    const unitIdMatch = unit.id.match(/^([BC])-(\d{2})-(\d{2})$/)
+    if (!unitIdMatch || unit.block !== unitIdMatch[1] || unit.level !== Number(unitIdMatch[2])) {
+      errors.push({
+        code: 'INVALID_UNIT_ID',
+        path: `${unitPath}.id`,
+        message: `Unit ${unit.id} must use current block-level-position numbering that matches its block and level fields.`,
+      })
+    }
+
+    unit.parking.bayNumbers.forEach((bayNumber, bayIndex) => {
+      const bayPath = `${unitPath}.parking.bayNumbers[${bayIndex}]`
+      if (!/^(?:G|UG|\d+A?)-(?:CT|CS|OS)-[BC]\d{3}$/.test(bayNumber)) {
+        errors.push({
+          code: 'INVALID_PARKING_BAY',
+          path: bayPath,
+          message: `Unit ${unit.id} has invalid current parking bay ${bayNumber}.`,
+        })
+      }
+      if (seenParkingBays.has(bayNumber)) {
+        errors.push({
+          code: 'DUPLICATE_PARKING_BAY',
+          path: bayPath,
+          message: `Parking bay ${bayNumber} is allocated more than once.`,
+        })
+      }
+      seenParkingBays.add(bayNumber)
+    })
 
     if (!layoutIds.has(unit.layoutId)) {
       errors.push({

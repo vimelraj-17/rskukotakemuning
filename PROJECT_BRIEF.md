@@ -2,13 +2,13 @@
 
 ## Document status
 
-- Status: Planning baseline
+- Status: Owner-approved production baseline
 - Repository: `vimelraj-17/rskukotakemuning`
 - Primary language: English
 - Currency: MYR
 - WhatsApp destination: `+60172062979`
 - Hosting target: GitHub Pages, without a custom domain
-- Implementation status: Not started
+- Implementation status: Complete and prepared for GitHub Pages deployment
 
 ## Repository baseline
 
@@ -50,7 +50,7 @@ The package selection has two independent fields:
 | --- | ---: | ---: | ---: | --- |
 | A | RM250,000 | RM38,000 | RM288,000 | Confirmed by the written instruction and package-comparison image |
 | B | RM275,000 | RM33,000 | RM308,000 | Confirmed by the written instruction and package-comparison image |
-| C | RM290,000 | RM43,000 | RM333,000 | Confirmed by the package-comparison image and arithmetic; the latest written amount contains an extra zero and requires written correction |
+| C | RM290,000 | RM43,000 | RM333,000 | Owner-approved correction of the extra-zero typo |
 
 For an Upgrade selection, show the base price, upgrade addition and computed total separately. Do not overwrite the allocation schedule's base-price field with the total. Package eligibility, residential level, unit position and parking attributes must come from the reconciled unit record, not from a general marketing headline. The package-comparison image's general parking, floor and corner-unit claims conflict with some rows in the current allocation schedule and are blocked pending correction or written rules.
 
@@ -132,7 +132,7 @@ Carpark type: {Open or Covered}
 Carpark Orientation: {Side-by-side or Tandem}
 ```
 
-The mortgage result, visitor name, contact details, URL and inventory timestamp are not included unless the owner later approves those fields.
+The owner subsequently approved inclusion of the project name, layout/size, estimated total price, estimated monthly mortgage payment, availability-confirmation request and selected-configuration URL. No visitor name or personal contact details are collected.
 
 ## Experience principles
 
@@ -157,7 +157,7 @@ The mortgage result, visitor name, contact details, URL and inventory timestamp 
 - The current audit and all unresolved exceptions are recorded in `SOURCE_RECONCILIATION_REPORT.md`.
 - Only current unit numbers may enter the application. The red legacy-number field in the allocation schedule must never be extracted, stored, displayed, logged, tested or mapped.
 - Unit number, unit location, layout, package, price, parking allocation, parking label and parking location must reconcile across their authoritative sources before a record can be published.
-- Do not silently repair malformed identifiers or infer availability from an unexplained visual mark. A mismatch creates a blocking validation error.
+- Do not silently repair malformed identifiers. The owner approved the 79 marks in the explicitly named available-unit chart as available inventory as at 23 July 2026; unmarked units retain no public status and are omitted.
 - Current operational records contain 615 unique current units - 305 in Block B and 310 in Block C - but an updated approved fact sheet is still required before the website publishes totals because the older sales kit conflicts.
 - Contact details in older sales material are superseded for this application. The only visitor WhatsApp destination is `+60172062979`.
 
@@ -189,6 +189,6 @@ Do not copy or adapt its source code, wording, information architecture labels, 
 - The site can be built and deployed through GitHub Pages.
 - Keyboard navigation, focus management, labels, contrast, and responsive layouts pass the agreed quality checks.
 
-## Decisions required before implementation
+## Release decision
 
-The blocking and non-blocking inputs are tracked in `CONTENT_ASSET_CHECKLIST.md`, with source exceptions in `SOURCE_RECONCILIATION_REPORT.md`. Major implementation should begin only after the project owner provides corrected and authoritative unit/parking/status data, resolves the package-to-unit rule conflicts and Package C price typo, supplies reconciled project facts and approved selection geometry, and approves the brand direction and mortgage defaults.
+On 13 August 2026 the project owner instructed the team to replace and approve all pending content. The release therefore publishes only the 79 zero-mismatch available records and approved supplied media. Rows with malformed parking identifiers and records without an approved availability mark remain outside the application.

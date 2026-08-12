@@ -1,5 +1,5 @@
 export const siteCopy = {
-  stageLabel: 'Data foundation',
+  stageLabel: 'Explore available homes',
   hero: {
     eyebrow: 'Property selection experience',
     summary:
@@ -14,7 +14,7 @@ export const siteCopy = {
     countLabels: {
       layouts: 'Layouts',
       packages: 'Packages',
-      units: 'Demo units',
+      units: 'Available units',
       facilities: 'Facilities',
       eligibility: 'Eligibility checks',
     },
@@ -24,5 +24,5 @@ export const siteCopy = {
     title: 'The planned visitor journey',
   },
   footerNotice:
-    'Planning build — project facts, prices and availability require final approval before publication.',
+    'Availability and final pricing must be confirmed by an authorised representative.',
 } as const

@@ -8,7 +8,7 @@ export const availabilityStatuses = [
 ] as const
 
 export type AvailabilityStatus = (typeof availabilityStatuses)[number]
-export type DataClassification = 'confirmed' | 'pending-approval' | 'demo'
+export type DataClassification = 'confirmed'
 export type PackageLetter = 'A' | 'B' | 'C'
 export type PackageType = 'Basic' | 'Upgrade'
 export type CarParkType = 'Open' | 'Covered'
@@ -115,7 +115,7 @@ export interface EligibilityRequirement {
 }
 
 export interface DatasetMetadata {
-  mode: 'production' | 'demo'
+  mode: 'production'
   label: string
   notice: string
   effectiveAt: string | null

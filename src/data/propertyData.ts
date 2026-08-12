@@ -4,22 +4,22 @@ import { layouts } from './layouts'
 import { locationInformation } from './location'
 import { packages } from './packages'
 import { projectInformation } from './project'
-import { demoUnits } from './units.demo'
+import { units } from './units'
 import type { PropertyData } from '../types/property'
 import { assertValidPropertyData } from '../utils/validatePropertyData'
 
 export const propertyData: PropertyData = {
   metadata: {
-    mode: 'demo',
-    label: 'DEMO DATA',
+    mode: 'production',
+    label: 'Availability as at 23 July 2026',
     notice:
-      'Unit IDs, bedroom and bathroom counts, parking details and availability shown in this build are synthetic test records. They are not real inventory and cannot be used to reserve a unit.',
-    effectiveAt: null,
+      'The 79 listed units are reconciled with the current unit-number allocation and car park plans. Availability and final pricing must still be confirmed by an authorised representative.',
+    effectiveAt: '2026-07-23',
   },
   project: projectInformation,
   layouts,
   packages,
-  units: demoUnits,
+  units,
   facilities,
   location: locationInformation,
   eligibilityRequirements,

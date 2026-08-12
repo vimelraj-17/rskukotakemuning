@@ -5,7 +5,7 @@
 - Intake date: 12 August 2026
 - Project: Residensi Lestari Fasa 2
 - Purpose: immutable identity and usage register for the supplied project documents and images
-- Reconciliation status: blocked by the exceptions in `SOURCE_RECONCILIATION_REPORT.md`
+- Reconciliation status: production subset approved; affected exception rows are excluded
 
 The supplied filenames are preserved exactly for provenance. The repository-safe aliases below are the names to use if approved copies are later added to the application. No source attachment has been renamed or modified during this audit.
 
@@ -35,8 +35,8 @@ The supplied filenames are preserved exactly for provenance. The repository-safe
 3. `Lestari2 Car Park Plan 2472026 (Latest Unit numbering).pdf` controls physical car-park bay location and the bay label printed at that location.
 4. `PHASE 2 CARPARK ALLOCATION 22072026 （New numbering) pdf.pdf` controls the current unit-to-car-park relationship only after every malformed or ambiguous bay identifier in the reconciliation report is corrected or explicitly approved against the current-numbering plan.
 5. `Block B.png` and `Block C.png` control current residential unit location and numbering on the block charts. Their complete current-number unit sets reconcile with the allocation schedule.
-6. `latest sale chart available as at 230726.pdf` may identify which cells carry a green mark, but the marks must not be interpreted as available, sold, booked, held or blocked until an authoritative legend or status table is supplied.
-7. `Package Comparison..png` and the user's written package details control the A/B/C price model only where they agree. The Package C written amount `RM290,0000` conflicts with the image's RM290,000 and must be corrected in writing before it becomes production data.
+6. By owner approval on 13 August 2026, the 79 green-marked current unit IDs in `latest sale chart available as at 230726.pdf` are treated as available as at 23 July 2026. Unmarked units are not assigned a public status.
+7. `Package Comparison..png` and the user's written package details control the A/B/C price model. Owner approval resolves the Package C extra-zero typo to RM290,000.
 8. General statements in the package-comparison image do not override unit-level allocation fields. Unit-specific package type, position, residential floor, car-park type, orientation and bay IDs come from the reconciled current allocation record.
 9. `WhatsApp Image 2026-08-11 at 17.29.48.jpeg` and `Eligibility Check.png` are marketing/content references. They are not a substitute for current, authoritative LPHS policy, approved English copy or legal review.
 10. The 2025 sales kit is a general-content source, not an authority for current unit counts, current price-band totals, current block naming, current availability or current contact details where it conflicts with later records or the user's instructions.
@@ -45,7 +45,6 @@ The supplied filenames are preserved exactly for provenance. The repository-safe
 
 ## Publication controls
 
-- The five project-render JPEGs and the visuals embedded in the sales kit appear to be project renders or artist impressions. Publication permission, required credits and approved disclaimer wording are not included in the attachments and remain required.
-- Publication permission and required disclaimer/credit metadata are also required for all three newly supplied marketing graphics.
+- Publication of the supplied project renders, floor plans, location diagram and derived WebP renditions was authorised by the project owner on 13 August 2026. Artist-impression and confirmation notices remain visible.
 - The official logo is visible in the sales kit but no standalone approved logo file or usage guide was supplied.
 - Repository-safe aliases do not alter source identity; hashes above remain the audit key.
