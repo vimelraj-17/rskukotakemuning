@@ -36,8 +36,16 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Type check
+        run: npm run typecheck
+
       - name: Build
         run: npm run build
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+
+      - name: Verify GitHub Pages paths
+        run: npm run verify:pages
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
 
@@ -45,7 +53,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
