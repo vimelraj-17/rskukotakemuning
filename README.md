@@ -24,7 +24,8 @@ npm run preview
 ## Structure
 
 - `src/components` — reusable interface components
-- `src/data` — typed contracts and approved project data
+- `src/data` — structured confirmed, pending-approval and demo project data
+- `src/types` — reusable property-domain types
 - `src/styles` — design tokens and responsive global styles
 - `src/utils` — framework-independent helpers
 - `src/test` — test setup and checks
@@ -38,3 +39,5 @@ The experience intentionally uses one document with section anchors and no clien
 ## Data safety
 
 Do not add production unit, availability or parking-highlight data until all blocking exceptions in the source reconciliation report are resolved. Never ingest the red legacy-number field from the current car-park allocation schedule.
+
+The current application runs in `DEMO DATA` mode with three synthetic unit records. See `data/templates/UNITS_CSV_TEMPLATE.md` and `data/templates/units-template.csv` for the unit-import handoff format. Run-time cross-record checks live in `src/utils/validatePropertyData.ts` and must pass before any dataset is published.

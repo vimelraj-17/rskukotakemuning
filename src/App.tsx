@@ -1,40 +1,35 @@
+import { DataNotice } from './components/DataNotice'
+import { DataOverview } from './components/DataOverview'
 import { SiteHeader } from './components/SiteHeader'
 import { journeySections } from './data/journey'
+import { propertyData } from './data/propertyData'
+import { siteCopy } from './data/siteCopy'
 
 export function App() {
   return (
     <div className="site-shell">
-      <SiteHeader />
+      <SiteHeader project={propertyData.project} stageLabel={siteCopy.stageLabel} />
 
       <main id="main-content">
         <section className="hero" aria-labelledby="page-title">
           <div className="hero__content">
-            <p className="eyebrow">Property selection experience</p>
-            <h1 id="page-title">Residensi Lestari Fasa 2</h1>
-            <p className="hero__summary">
-              A responsive, guided journey from project discovery to a verified
-              unit enquiry. This temporary homepage confirms that the application
-              foundation is running.
-            </p>
-            <a className="button" href="#journey">
-              View planned journey
+            <p className="eyebrow">{siteCopy.hero.eyebrow}</p>
+            <h1 id="page-title">{propertyData.project.name}</h1>
+            <p className="hero__summary">{siteCopy.hero.summary}</p>
+            <a className="button" href="#data-overview">
+              {siteCopy.hero.actionLabel}
             </a>
           </div>
 
-          <aside className="status-card" aria-label="Build status">
-            <span className="status-card__label">Foundation checkpoint</span>
-            <strong>React + TypeScript + Vite</strong>
-            <p>
-              Production unit data remains gated by the source reconciliation
-              process.
-            </p>
-          </aside>
+          <DataNotice metadata={propertyData.metadata} />
         </section>
+
+        <DataOverview data={propertyData} />
 
         <section className="journey" id="journey" aria-labelledby="journey-title">
           <div className="section-heading">
-            <p className="eyebrow">Single-page flow</p>
-            <h2 id="journey-title">The planned visitor journey</h2>
+            <p className="eyebrow">{siteCopy.journey.eyebrow}</p>
+            <h2 id="journey-title">{siteCopy.journey.title}</h2>
           </div>
 
           <ol className="journey-grid">
@@ -52,10 +47,7 @@ export function App() {
       </main>
 
       <footer>
-        <p>
-          Planning build — project facts, prices and availability require final
-          approval before publication.
-        </p>
+        <p>{siteCopy.footerNotice}</p>
       </footer>
     </div>
   )

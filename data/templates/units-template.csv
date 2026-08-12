@@ -1,0 +1,2 @@
+id,block,level,position_or_stack,layout_id,size_sq_ft,bedrooms,bathrooms,base_price_myr,compatible_package_ids,parking_bay_1,parking_bay_2,parking_level,parking_type,parking_orientation,availability_status,plan_x,plan_y,plan_width,plan_height
+DEMO-REPLACE-ME,B,1,Corner,layout-1000,1000,3,2,250000,a-basic|a-upgrade,DEMO-P1,DEMO-P2,DEMO LEVEL,Open,Tandem,unknown,0.05,0.12,0.08,0.06
