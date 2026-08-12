@@ -1,4 +1,5 @@
 import { SiteHeader } from './components/SiteHeader'
+import { GuidedSelector } from './components/GuidedSelector'
 import { brochureContent as copy } from './data/brochure'
 import { propertyData } from './data/propertyData'
 import { siteCopy } from './data/siteCopy'
@@ -44,6 +45,8 @@ export function App() {
         <section className="section location-section" id="location" aria-labelledby="location-title"><div><p className="eyebrow">{copy.location.eyebrow}</p><h2 id="location-title">{copy.location.title}</h2><p>{copy.location.body}</p><strong>{propertyData.location.marketingArea}</strong></div><Placeholder label={copy.location.placeholder} /></section>
 
         <section className="section eligibility-section" id="eligibility" aria-labelledby="eligibility-title"><div className="section-heading narrow"><p className="eyebrow">{copy.eligibility.eyebrow}</p><h2 id="eligibility-title">{copy.eligibility.title}</h2></div><ol className="eligibility-grid">{propertyData.eligibilityRequirements.map((item, index) => <li key={item.id}><span>{index + 1}</span><div><h3>{item.title}</h3><p>{item.description}</p></div></li>)}</ol><p className="disclaimer"><strong>Important:</strong> {copy.eligibility.disclaimer}</p></section>
+
+        <GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} />
 
         <section className="contact-section" id="contact" aria-labelledby="contact-title"><p className="eyebrow eyebrow--light">{copy.contact.eyebrow}</p><h2 id="contact-title">{copy.contact.title}</h2><p>{copy.contact.body}</p><a className="button button--gold" href={whatsAppUrl} target="_blank" rel="noreferrer">{copy.contact.action} <span aria-hidden="true">↗</span></a></section>
       </main>

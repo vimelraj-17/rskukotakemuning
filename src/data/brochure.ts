@@ -2,7 +2,7 @@ export const brochureContent = {
   navigation: [
     { label: 'Overview', href: '#overview' }, { label: 'Layouts', href: '#layouts' },
     { label: 'Furnishing', href: '#furnishing' }, { label: 'Facilities', href: '#facilities' },
-    { label: 'Location', href: '#location' }, { label: 'Eligibility', href: '#eligibility' },
+    { label: 'Location', href: '#location' }, { label: 'Eligibility', href: '#eligibility' }, { label: 'Select', href: '#select-home' },
   ],
   hero: { eyebrow: 'Kota Kemuning · Selangor', title: 'A considered place to call home.', summary: 'Explore the plans, furnishing choices and essential project information for Residensi Lestari Fasa 2.', primaryAction: 'Explore the project', secondaryAction: 'Talk to us', image: 'images/facade-hero.webp', imageAlt: 'Artist’s impression of the Residensi Lestari Fasa 2 residential towers and landscaped entrance' },
   overview: { eyebrow: 'Project overview', title: 'Designed around everyday living.', body: 'Residensi Lestari Fasa 2 brings together practical home layouts, furnishing choices and shared facilities in the Kota Kemuning area. This brochure presents only information supported by the supplied project sources; final availability is confirmed directly with the sales team.' },

@@ -9,6 +9,20 @@ const packagePricing: Record<
   C: { basePriceMyr: 290000, upgradeAdditionMyr: 43000, layoutId: 'layout-1080' },
 }
 
+const basicInclusions = [
+  'TV cabinet and television',
+  'Kitchen cabinet and refrigerator',
+  'Three wardrobes',
+  'Three air-conditioning units',
+  'Two water heaters',
+] as const
+
+const upgradeInclusions: Record<PackageLetter, readonly string[]> = {
+  A: ['Premium finish', 'Larger kitchen cabinetry', 'Full-height wardrobes'],
+  B: ['Premium finish', 'Larger kitchen cabinetry', 'Full-height wardrobes'],
+  C: ['Premium finish', 'Wet and dry kitchen cabinetry', 'Kitchen island and upgraded appliances'],
+}
+
 export const packages: readonly PackageDefinition[] = (
   Object.entries(packagePricing) as [PackageLetter, (typeof packagePricing)[PackageLetter]][]
 ).flatMap(([letter, pricing]) => [
@@ -21,7 +35,7 @@ export const packages: readonly PackageDefinition[] = (
     upgradeAdditionMyr: 0,
     totalPriceMyr: pricing.basePriceMyr,
     compatibleLayoutIds: [pricing.layoutId],
-    inclusions: [],
+    inclusions: basicInclusions,
     classification: 'pending-approval',
   },
   {
@@ -33,7 +47,7 @@ export const packages: readonly PackageDefinition[] = (
     upgradeAdditionMyr: pricing.upgradeAdditionMyr,
     totalPriceMyr: pricing.basePriceMyr + pricing.upgradeAdditionMyr,
     compatibleLayoutIds: [pricing.layoutId],
-    inclusions: [],
+    inclusions: [...basicInclusions, ...upgradeInclusions[letter]],
     classification: 'pending-approval',
   },
 ])

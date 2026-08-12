@@ -43,3 +43,5 @@ Do not add production unit, availability or parking-highlight data until all blo
 The current inventory layer runs in `DEMO DATA` mode with three synthetic unit records; the public brochure does not present them as inventory. See `data/templates/UNITS_CSV_TEMPLATE.md` and `data/templates/units-template.csv` for the unit-import handoff format. Run-time cross-record checks live in `src/utils/validatePropertyData.ts` and must pass before any dataset is published.
 
 The brochure uses optimized copies of supplied project renders in `public/images`. Each render is described as an artist's impression. Approved standalone floor plans and a verified location map are represented by accessible placeholder blocks until authoritative assets arrive.
+
+The guided selector reads layouts, packages, compatibility, inclusions and pricing from `src/data`. Valid layout/package choices are stored under `residensi-lestari-selection-v1`; unknown or incompatible saved values are removed before use.

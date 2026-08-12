@@ -59,6 +59,15 @@ describe('validatePropertyData', () => {
     ).toHaveLength(2)
   })
 
+  it('detects invalid layout starting prices', () => {
+    const data = cloneData()
+    data.layouts = [{ ...data.layouts[0]!, startingPriceMyr: 0 }]
+
+    expect(validatePropertyData(data).errors).toContainEqual(
+      expect.objectContaining({ code: 'INVALID_PRICE' }),
+    )
+  })
+
   it('detects unsupported availability statuses at runtime', () => {
     const data = cloneData()
     data.units = [

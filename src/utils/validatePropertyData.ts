@@ -39,6 +39,16 @@ export function validatePropertyData(data: PropertyData): ValidationResult {
   const packageById = new Map(data.packages.map((item) => [item.id, item]))
   const seenUnitIds = new Set<string>()
 
+  data.layouts.forEach((layout, layoutIndex) => {
+    if (!isValidPrice(layout.startingPriceMyr)) {
+      errors.push({
+        code: 'INVALID_PRICE',
+        path: `layouts[${layoutIndex}].startingPriceMyr`,
+        message: `Layout ${layout.id} must have a positive finite starting price.`,
+      })
+    }
+  })
+
   data.packages.forEach((item, packageIndex) => {
     const packagePath = `packages[${packageIndex}]`
 

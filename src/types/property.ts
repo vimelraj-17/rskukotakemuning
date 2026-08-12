@@ -36,6 +36,8 @@ export interface Layout {
   bedrooms: number | null
   bathrooms: number | null
   planAsset: string | null
+  features: readonly string[]
+  startingPriceMyr: number
   classification: DataClassification
 }
 
