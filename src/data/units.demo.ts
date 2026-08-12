@@ -23,8 +23,7 @@ export const demoUnits: readonly Unit[] = [
       type: 'Open',
       orientation: 'Tandem',
     },
-    availabilityStatus: 'unknown',
-    planCoordinates: { x: 0.05, y: 0.12, width: 0.08, height: 0.06 },
+    availabilityStatus: 'available',
     classification: 'demo',
   },
   {
@@ -44,7 +43,7 @@ export const demoUnits: readonly Unit[] = [
       type: 'Covered',
       orientation: 'Side-by-side',
     },
-    availabilityStatus: 'unknown',
+    availabilityStatus: 'held',
     classification: 'demo',
   },
   {
@@ -64,7 +63,7 @@ export const demoUnits: readonly Unit[] = [
       type: 'Covered',
       orientation: 'Tandem',
     },
-    availabilityStatus: 'unknown',
+    availabilityStatus: 'sold',
     classification: 'demo',
   },
 ]

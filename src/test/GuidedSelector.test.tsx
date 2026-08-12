@@ -5,7 +5,7 @@ import { propertyData } from '../data/propertyData'
 import { selectionStorageKey } from '../utils/selection'
 
 function renderSelector() {
-  return render(<GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} />)
+  return render(<GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} units={propertyData.units} dataLabel={propertyData.metadata.label} dataNotice={propertyData.metadata.notice} />)
 }
 
 describe('GuidedSelector', () => {
@@ -56,5 +56,47 @@ describe('GuidedSelector', () => {
 
     expect(screen.getByRole('heading', { name: 'Choose your layout' })).toBeInTheDocument()
     expect(window.localStorage.getItem(selectionStorageKey)).toBeNull()
+  })
+
+  it('selects available units while reserved units remain visible and disabled', () => {
+    renderSelector()
+    fireEvent.click(screen.getByRole('radio', { name: /1,000 sq ft layout/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to packages/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
+
+    const available = screen.getByRole('radio', { name: /DEMO-B-01-01/i })
+    fireEvent.click(available)
+    expect(available).toBeChecked()
+
+    fireEvent.change(screen.getByLabelText('Package compatibility'), { target: { value: 'b-basic' } })
+    expect(screen.getByRole('radio', { name: /DEMO-B-06-01/i })).toBeDisabled()
+    expect(screen.getByText('Reserved', { selector: '.unit-status' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^Continue/i })).toBeDisabled()
+  })
+
+  it('filters units and offers a reset when no results match', () => {
+    renderSelector()
+    fireEvent.click(screen.getByRole('radio', { name: /1,000 sq ft layout/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to packages/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
+    fireEvent.change(screen.getByLabelText('Level'), { target: { value: '6' } })
+    expect(screen.getByRole('heading', { name: /No units match/i })).toBeInTheDocument()
+    fireEvent.click(screen.getAllByRole('button', { name: 'Reset filters' })[1]!)
+    expect(screen.getByRole('radio', { name: /DEMO-B-01-01/i })).toBeInTheDocument()
+  })
+
+  it('clears an incompatible unit and returns to package choice after a layout change', () => {
+    renderSelector()
+    fireEvent.click(screen.getByRole('radio', { name: /1,000 sq ft layout/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to packages/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /DEMO-B-01-01/i }))
+
+    fireEvent.change(screen.getByLabelText('Layout'), { target: { value: 'layout-1080' } })
+    expect(screen.getByRole('heading', { name: 'Choose your package' })).toBeInTheDocument()
+    expect(JSON.parse(window.localStorage.getItem(selectionStorageKey)!)).toMatchObject({ unitId: null })
   })
 })
