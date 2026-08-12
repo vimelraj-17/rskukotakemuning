@@ -43,7 +43,7 @@ npm run lint
 npm run typecheck
 npm run build
 npm run verify:pages
-npm audit --omit=dev
+npm audit
 ```
 
 ## Remaining launch blockers and placeholders
@@ -54,7 +54,7 @@ npm audit --omit=dev
 | Unit and car-park mapping | Resolve all blocking exceptions in `SOURCE_RECONCILIATION_REPORT.md`; verify unit ID, block, level, stack, availability, bay number, car-park level, covered/open type and side-by-side/tandem orientation. |
 | Floor plans | Supply approved standalone plan images. No plan hotspots are enabled because trustworthy coordinates are unavailable. |
 | Location | Supply the approved address, coordinates, location map and verified nearby travel claims. |
-| Layout specifications | Confirm bedroom/bathroom counts and all package-to-layout rules. |
+| Layout specifications | Confirm bedroom/bathroom counts, detailed features and all package-to-layout rules. |
 | Package and furnishing data | Obtain final written approval for prices, inclusions, brands, dimensions, colours, substitutions and terms. |
 | Facilities and project facts | Confirm the final facility schedule, fact-card values and expected VP wording. |
 | Browser release smoke test | Deploy the tested commit to a Pages preview or `main`, then repeat the journey at 375 × 812, 768 × 1024 and 1440 × 900 in a real browser. This workspace could not expose its local preview server because its network-interface lookup failed. |
