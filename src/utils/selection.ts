@@ -64,6 +64,31 @@ export function readSavedSelection(
   return empty
 }
 
+export function readSelectionFromSearch(
+  search: string,
+  layouts: readonly Layout[],
+  packages: readonly PackageDefinition[],
+  units: readonly Unit[],
+): SelectionState | null {
+  const params = new URLSearchParams(search)
+  if (!params.has('layout') && !params.has('package') && !params.has('unit')) return null
+  return validateSavedSelection({
+    layoutId: params.get('layout'),
+    packageId: params.get('package'),
+    unitId: params.get('unit'),
+  }, layouts, packages, units)
+}
+
+export function createShareUrl(selection: SelectionState, location: Location): string {
+  const url = new URL(location.href)
+  url.search = ''
+  if (selection.layoutId) url.searchParams.set('layout', selection.layoutId)
+  if (selection.packageId) url.searchParams.set('package', selection.packageId)
+  if (selection.unitId) url.searchParams.set('unit', selection.unitId)
+  url.hash = 'select-home'
+  return url.toString()
+}
+
 export function persistSelection(selection: SelectionState): void {
   if (!selection.layoutId) {
     window.localStorage.removeItem(selectionStorageKey)

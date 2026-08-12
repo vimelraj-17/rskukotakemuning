@@ -2,11 +2,14 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Layout, PackageDefinition, Unit } from '../types/property'
 import { formatMyr } from '../utils/formatMyr'
 import { emptyUnitFilters, filterUnits, isUnitSelectable, type UnitFilters } from '../utils/filterUnits'
+import { SelectionSummary } from './SelectionSummary'
 import {
+  createShareUrl,
   getCompatibilityReason,
   isPackageCompatible,
   persistSelection,
   readSavedSelection,
+  readSelectionFromSearch,
 } from '../utils/selection'
 
 interface GuidedSelectorProps {
@@ -15,17 +18,20 @@ interface GuidedSelectorProps {
   units: readonly Unit[]
   dataLabel: string
   dataNotice: string
+  projectName: string
 }
 
-export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice }: GuidedSelectorProps) {
-  const initial = useMemo(() => readSavedSelection(layouts, packages, units), [layouts, packages, units])
-  const [step, setStep] = useState<1 | 2 | 3>(initial.unitId ? 3 : initial.packageId ? 2 : 1)
+export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice, projectName }: GuidedSelectorProps) {
+  const initial = useMemo(() => readSelectionFromSearch(window.location.search, layouts, packages, units) ?? readSavedSelection(layouts, packages, units), [layouts, packages, units])
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(initial.unitId ? 4 : initial.packageId ? 2 : 1)
   const [layoutId, setLayoutId] = useState<string | null>(initial.layoutId)
   const [packageId, setPackageId] = useState<string | null>(initial.packageId)
   const [unitId, setUnitId] = useState<string | null>(initial.unitId)
   const [filters, setFilters] = useState<UnitFilters>(emptyUnitFilters)
+  const [copyStatus, setCopyStatus] = useState('')
   const selectedLayout = layouts.find((item) => item.id === layoutId) ?? null
   const selectedPackage = packages.find((item) => item.id === packageId) ?? null
+  const selectedUnit = units.find((item) => item.id === unitId) ?? null
   const matchingUnits = layoutId && packageId ? filterUnits(units, layoutId, packageId, filters) : []
   const blocks = [...new Set(units.map((unit) => unit.block))].sort()
   const levels = [...new Set(units.map((unit) => unit.level))].sort((a, b) => a - b)
@@ -46,11 +52,34 @@ export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice
 
   function selectPackage(nextPackageId: string) {
     setPackageId(nextPackageId)
-    setUnitId(null)
+    const currentUnit = units.find((item) => item.id === unitId)
+    if (currentUnit && !currentUnit.compatiblePackageIds.includes(nextPackageId)) setUnitId(null)
   }
 
   function updateFilter<Key extends keyof UnitFilters>(key: Key, value: UnitFilters[Key]) {
     setFilters((current) => ({ ...current, [key]: value }))
+  }
+
+  async function copySummary() {
+    if (!selectedLayout || !selectedPackage || !selectedUnit) return
+    const total = selectedUnit.basePriceMyr + selectedPackage.upgradeAdditionMyr
+    const shareUrl = createShareUrl({ layoutId, packageId, unitId }, window.location)
+    const summary = [
+      projectName,
+      `Unit: ${selectedUnit.id}`,
+      `Block ${selectedUnit.block}, Level ${selectedUnit.level}`,
+      `Layout: ${selectedLayout.name}`,
+      `Package: ${selectedPackage.name}`,
+      `Estimated total: ${formatMyr(total)}`,
+      `Parking: ${selectedUnit.parking.bayNumbers.join(' / ')}`,
+      shareUrl,
+    ].join('\n')
+    try {
+      await navigator.clipboard.writeText(summary)
+      setCopyStatus('Summary and share link copied.')
+    } catch {
+      setCopyStatus('Copy failed. Please copy the page URL from your browser.')
+    }
   }
 
   return (
@@ -66,6 +95,7 @@ export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice
           <li aria-current={step === 1 ? 'step' : undefined} data-complete={Boolean(layoutId)}><span>1</span> Layout</li>
           <li aria-current={step === 2 ? 'step' : undefined} data-complete={Boolean(packageId)}><span>2</span> Package</li>
           <li aria-current={step === 3 ? 'step' : undefined} data-complete={Boolean(unitId)}><span>3</span> Unit</li>
+          <li aria-current={step === 4 ? 'step' : undefined} data-complete={step === 4}><span>4</span> Summary</li>
         </ol>
 
         {step === 1 ? (
@@ -109,7 +139,7 @@ export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice
             </div>
             <div className="selector-controls"><button className="selector-back" type="button" onClick={() => setStep(1)}><span aria-hidden="true">←</span> Back</button><button className="selector-next" type="button" disabled={!packageId} onClick={() => setStep(3)}>Continue to units <span aria-hidden="true">→</span></button></div>
           </div>
-        ) : (
+        ) : step === 3 ? (
           <div className="selector-step unit-step" aria-labelledby="unit-step-title">
             <div><span>Step 3 of 3</span><h3 id="unit-step-title">Choose your unit</h3><p>{selectedLayout?.name} · {selectedPackage?.name}</p></div>
             <aside className="demo-notice" aria-label={dataLabel}><strong>{dataLabel}</strong><p>{dataNotice}</p></aside>
@@ -134,9 +164,11 @@ export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice
                 <span className="selected-badge">{selected ? 'Selected' : selectable ? 'Select unit' : `${statusLabel} — unavailable`}</span>
               </label>
             })}</div> : <div className="empty-results"><h4>No units match these filters.</h4><p>Reset the filters or go back to choose another layout and package.</p><button type="button" onClick={() => setFilters(emptyUnitFilters)}>Reset filters</button></div>}
-            <div className="selector-controls"><button className="selector-back" type="button" onClick={() => setStep(2)}><span aria-hidden="true">←</span> Back</button><button className="selector-next" type="button" disabled={!unitId}>Continue <span aria-hidden="true">→</span></button></div>
+            <div className="selector-controls"><button className="selector-back" type="button" onClick={() => setStep(2)}><span aria-hidden="true">←</span> Back</button><button className="selector-next" type="button" disabled={!unitId} onClick={() => setStep(4)}>Review selection <span aria-hidden="true">→</span></button></div>
           </div>
-        )}
+        ) : selectedLayout && selectedPackage && selectedUnit ? (
+          <SelectionSummary projectName={projectName} layout={selectedLayout} packageDefinition={selectedPackage} unit={selectedUnit} onEditLayout={() => setStep(1)} onEditPackage={() => setStep(2)} onEditUnit={() => setStep(3)} onCopy={copySummary} copyStatus={copyStatus} />
+        ) : null}
       </div>
     </section>
   )

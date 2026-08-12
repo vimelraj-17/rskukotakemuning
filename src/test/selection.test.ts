@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { propertyData } from '../data/propertyData'
-import { getCompatibilityReason, isPackageCompatible, validateSavedSelection } from '../utils/selection'
+import { createShareUrl, getCompatibilityReason, isPackageCompatible, readSelectionFromSearch, validateSavedSelection } from '../utils/selection'
 
 describe('selection compatibility rules', () => {
   const layout1000 = propertyData.layouts.find((item) => item.id === 'layout-1000')!
@@ -16,5 +16,11 @@ describe('selection compatibility rules', () => {
   it('rejects unknown and incompatible persisted values', () => {
     expect(validateSavedSelection({ layoutId: 'missing', packageId: null }, propertyData.layouts, propertyData.packages)).toBeNull()
     expect(validateSavedSelection({ layoutId: layout1000.id, packageId: packageC.id }, propertyData.layouts, propertyData.packages)).toBeNull()
+  })
+
+  it('validates query parameters and creates an encoded share URL', () => {
+    expect(readSelectionFromSearch('?layout=layout-1000&package=a-basic&unit=DEMO-B-01-01', propertyData.layouts, propertyData.packages, propertyData.units)).toEqual({ layoutId: 'layout-1000', packageId: 'a-basic', unitId: 'DEMO-B-01-01' })
+    expect(readSelectionFromSearch('?layout=layout-1000&package=bad&unit=bad', propertyData.layouts, propertyData.packages, propertyData.units)).toBeNull()
+    expect(createShareUrl({ layoutId: 'layout-1000', packageId: 'a-basic', unitId: 'DEMO-B-01-01' }, window.location)).toContain('layout=layout-1000&package=a-basic&unit=DEMO-B-01-01')
   })
 })

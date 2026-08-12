@@ -1,15 +1,18 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { GuidedSelector } from '../components/GuidedSelector'
 import { propertyData } from '../data/propertyData'
 import { selectionStorageKey } from '../utils/selection'
 
 function renderSelector() {
-  return render(<GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} units={propertyData.units} dataLabel={propertyData.metadata.label} dataNotice={propertyData.metadata.notice} />)
+  return render(<GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} units={propertyData.units} dataLabel={propertyData.metadata.label} dataNotice={propertyData.metadata.notice} projectName={propertyData.project.name} />)
 }
 
 describe('GuidedSelector', () => {
-  beforeEach(() => window.localStorage.clear())
+  beforeEach(() => {
+    window.localStorage.clear()
+    window.history.replaceState({}, '', '/')
+  })
 
   it('selects a layout, highlights it and preserves it when moving back', () => {
     renderSelector()
@@ -72,7 +75,7 @@ describe('GuidedSelector', () => {
     fireEvent.change(screen.getByLabelText('Package compatibility'), { target: { value: 'b-basic' } })
     expect(screen.getByRole('radio', { name: /DEMO-B-06-01/i })).toBeDisabled()
     expect(screen.getByText('Reserved', { selector: '.unit-status' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /^Continue/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /Review selection/i })).toBeDisabled()
   })
 
   it('filters units and offers a reset when no results match', () => {
@@ -98,5 +101,35 @@ describe('GuidedSelector', () => {
     fireEvent.change(screen.getByLabelText('Layout'), { target: { value: 'layout-1080' } })
     expect(screen.getByRole('heading', { name: 'Choose your package' })).toBeInTheDocument()
     expect(JSON.parse(window.localStorage.getItem(selectionStorageKey)!)).toMatchObject({ unitId: null })
+  })
+
+  it('shows calculated totals and preserves compatible choices while editing', () => {
+    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+    renderSelector()
+    expect(screen.getByRole('heading', { name: 'Your selection summary' })).toBeInTheDocument()
+    expect(screen.getByText(/RM\s*288,000/)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Change package' }))
+    expect(screen.getByRole('radio', { name: /Package A Upgrade/i })).toBeChecked()
+    fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
+    expect(screen.getByRole('radio', { name: /DEMO-B-01-01/i })).toBeChecked()
+  })
+
+  it('copies the summary with a validated share URL', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } })
+    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+    renderSelector()
+    fireEvent.click(screen.getByRole('button', { name: 'Copy summary and share link' }))
+    await screen.findByText('Summary and share link copied.')
+    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01'))
+  })
+
+  it('ignores invalid query parameters and falls back safely', () => {
+    window.localStorage.setItem(selectionStorageKey, JSON.stringify({ layoutId: 'layout-1000', packageId: 'a-basic', unitId: null }))
+    window.history.replaceState({}, '', '/?layout=layout-1000&package=missing&unit=bad')
+    renderSelector()
+    expect(screen.getByRole('heading', { name: 'Choose your package' })).toBeInTheDocument()
+    expect(screen.queryByText('bad')).not.toBeInTheDocument()
   })
 })
