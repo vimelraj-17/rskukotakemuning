@@ -107,12 +107,24 @@ describe('GuidedSelector', () => {
     window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
     renderSelector()
     expect(screen.getByRole('heading', { name: 'Your selection summary' })).toBeInTheDocument()
-    expect(screen.getByText(/RM\s*288,000/)).toBeInTheDocument()
+    expect(screen.getAllByText(/RM\s*288,000/)).not.toHaveLength(0)
     fireEvent.click(screen.getByRole('button', { name: 'Change package' }))
     expect(screen.getByRole('radio', { name: /Package A Upgrade/i })).toBeChecked()
     fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
     fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
     expect(screen.getByRole('radio', { name: /DEMO-B-01-01/i })).toBeChecked()
+  })
+
+  it('keeps loan assumptions while refreshing selected package pricing', () => {
+    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+    renderSelector()
+    fireEvent.change(screen.getByLabelText('Annual interest rate (%)'), { target: { value: '5.5' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Change package' }))
+    fireEvent.click(screen.getByRole('radio', { name: /Package A Basic/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to units/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Review selection/i }))
+    expect(screen.getByLabelText('Package price (MYR)')).toHaveValue(0)
+    expect(screen.getByLabelText('Annual interest rate (%)')).toHaveValue(5.5)
   })
 
   it('copies the summary with a validated share URL', async () => {

@@ -1,5 +1,6 @@
 import type { Layout, PackageDefinition, Unit } from '../types/property'
 import { formatMyr } from '../utils/formatMyr'
+import { MortgageCalculator } from './MortgageCalculator'
 
 interface SelectionSummaryProps {
   projectName: string
@@ -25,6 +26,7 @@ export function SelectionSummary({ projectName, layout, packageDefinition: pkg, 
       <section className="price-summary"><h4>Estimated price</h4><dl><div><dt>Base price</dt><dd>{formatMyr(unit.basePriceMyr)}</dd></div><div><dt>Package cost</dt><dd>{formatMyr(pkg.upgradeAdditionMyr)}</dd></div><div className="summary-total"><dt>Estimated total</dt><dd>{formatMyr(total)}</dd></div></dl></section>
     </div>
     <aside className="confirmation-notice"><strong>Confirmation required</strong><p>Availability and final pricing must be confirmed by an authorised representative.</p></aside>
+    <MortgageCalculator propertyPrice={unit.basePriceMyr} packagePrice={pkg.upgradeAdditionMyr} />
     <div className="summary-actions"><button className="selector-next" type="button" onClick={onCopy}>Copy summary and share link</button><span role="status" aria-live="polite">{copyStatus}</span></div>
   </div>
 }
