@@ -40,4 +40,6 @@ The experience intentionally uses one document with section anchors and no clien
 
 Do not add production unit, availability or parking-highlight data until all blocking exceptions in the source reconciliation report are resolved. Never ingest the red legacy-number field from the current car-park allocation schedule.
 
-The current application runs in `DEMO DATA` mode with three synthetic unit records. See `data/templates/UNITS_CSV_TEMPLATE.md` and `data/templates/units-template.csv` for the unit-import handoff format. Run-time cross-record checks live in `src/utils/validatePropertyData.ts` and must pass before any dataset is published.
+The current inventory layer runs in `DEMO DATA` mode with three synthetic unit records; the public brochure does not present them as inventory. See `data/templates/UNITS_CSV_TEMPLATE.md` and `data/templates/units-template.csv` for the unit-import handoff format. Run-time cross-record checks live in `src/utils/validatePropertyData.ts` and must pass before any dataset is published.
+
+The brochure uses optimized copies of supplied project renders in `public/images`. Each render is described as an artist's impression. Approved standalone floor plans and a verified location map are represented by accessible placeholder blocks until authoritative assets arrive.

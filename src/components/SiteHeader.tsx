@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { brochureContent } from '../data/brochure'
 import type { ProjectInformation } from '../types/property'
 
 interface SiteHeaderProps {
@@ -6,6 +8,8 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ project, stageLabel }: SiteHeaderProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <header className="site-header">
       <a className="skip-link" href="#main-content">
@@ -20,7 +24,14 @@ export function SiteHeader({ project, stageLabel }: SiteHeaderProps) {
           <small>{project.phaseLabel}</small>
         </span>
       </a>
-      <span className="site-header__stage">{stageLabel}</span>
+      <button className="nav-toggle" type="button" aria-expanded={isOpen} aria-controls="primary-navigation" onClick={() => setIsOpen((value) => !value)}>
+        {isOpen ? 'Close' : 'Menu'}
+      </button>
+      <nav id="primary-navigation" className="primary-nav" data-open={isOpen} aria-label="Primary navigation">
+        {brochureContent.navigation.map((item) => <a key={item.href} href={item.href} onClick={() => setIsOpen(false)}>{item.label}</a>)}
+        <a className="nav-contact" href="#contact" onClick={() => setIsOpen(false)}>Contact</a>
+      </nav>
+      <span className="visually-hidden">{stageLabel}</span>
     </header>
   )
 }
