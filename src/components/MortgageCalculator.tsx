@@ -49,7 +49,7 @@ export function MortgageCalculator({ propertyPrice: selectedPropertyPrice, packa
   }
 
   return <section className="mortgage-calculator" aria-labelledby="mortgage-title">
-    <div className="mortgage-heading"><p className="eyebrow">Financing illustration</p><h4 id="mortgage-title">Estimated mortgage calculator</h4><p>Adjust the assumptions to explore a standard reducing-balance repayment estimate.</p></div>
+    <div className="mortgage-heading"><p className="eyebrow">Financing illustration</p><h3 id="mortgage-title">Estimated mortgage calculator</h3><p>Adjust the assumptions to explore a standard reducing-balance repayment estimate.</p></div>
     <div className="mortgage-layout">
       <form className="mortgage-inputs" onSubmit={(event) => event.preventDefault()}>
         <label>Property price (MYR)<input type="number" min="0" step="1000" inputMode="decimal" value={propertyPrice} onChange={(event) => setPropertyDraft({ source: selectedPropertyPrice, value: event.target.value })} /></label>

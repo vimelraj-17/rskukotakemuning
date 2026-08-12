@@ -27,5 +27,16 @@ describe('App', () => {
     expect(screen.getByAltText(/residential towers and landscaped entrance/)).toHaveAttribute('src', '/images/facade-hero.webp')
     expect(screen.getByAltText(/central facilities building/)).toHaveAttribute('loading', 'lazy')
     expect(screen.getByRole('img', { name: 'Verified location map coming soon' })).toBeInTheDocument()
+    expect(screen.getByAltText(/residential towers and landscaped entrance/)).toHaveAttribute('width', '1440')
+    expect(screen.getByAltText(/central facilities building/)).toHaveAttribute('height', '810')
+  })
+
+  it('keeps navigation and workflow controls keyboard reachable', () => {
+    render(<App />)
+    const menu = screen.getByRole('button', { name: 'Menu' })
+    menu.focus()
+    expect(menu).toHaveFocus()
+    expect(screen.getByRole('radio', { name: /1,000 sq ft layout/i })).toHaveAccessibleName()
+    expect(screen.getByRole('button', { name: /Continue to packages/i })).toBeDisabled()
   })
 })

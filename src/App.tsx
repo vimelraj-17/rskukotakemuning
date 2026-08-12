@@ -20,7 +20,7 @@ export function App() {
       <SiteHeader project={propertyData.project} stageLabel={siteCopy.stageLabel} />
       <main id="main-content">
         <section className="brochure-hero" aria-labelledby="page-title">
-          <img src={assetUrl(copy.hero.image)} alt={copy.hero.imageAlt} />
+          <img src={assetUrl(copy.hero.image)} alt={copy.hero.imageAlt} width="1440" height="810" fetchPriority="high" />
           <div className="hero-shade" />
           <div className="hero-inner">
             <p className="eyebrow eyebrow--light">{copy.hero.eyebrow}</p><h1 id="page-title">{copy.hero.title}</h1><p>{copy.hero.summary}</p>
@@ -39,7 +39,7 @@ export function App() {
 
         <section className="section furnishing-section" id="furnishing" aria-labelledby="furnishing-title"><div className="section-heading narrow"><p className="eyebrow eyebrow--light">{copy.furnishing.eyebrow}</p><h2 id="furnishing-title">{copy.furnishing.title}</h2><p>{copy.furnishing.body}</p></div><div className="package-grid">{basicPackages.map((pkg) => { const upgrade = upgradePackages.find((item) => item.letter === pkg.letter)!; return <article className="package-card" key={pkg.id}><span className="package-letter">{pkg.letter}</span><h3>{pkg.name}</h3><strong>{formatMyr(pkg.basePriceMyr)}</strong><p>Upgrade addition <b>+ {formatMyr(upgrade.upgradeAdditionMyr)}</b></p><small>{formatMyr(upgrade.totalPriceMyr)} total</small></article> })}</div><div className="furnishing-details"><div><h3>Basic furnishing reference</h3><ul>{copy.furnishing.basicItems.map((item) => <li key={item}>{item}</li>)}</ul></div><p>{copy.furnishing.note}</p></div></section>
 
-        <section className="section media-split" id="facilities" aria-labelledby="facilities-title"><figure><img src={assetUrl(copy.facilities.image)} alt={copy.facilities.imageAlt} loading="lazy" /><figcaption>{copy.imageDisclaimer}</figcaption></figure><div><p className="eyebrow">{copy.facilities.eyebrow}</p><h2 id="facilities-title">{copy.facilities.title}</h2><p>{copy.facilities.body}</p><ul className="feature-list">{propertyData.facilities.map((item) => <li key={item.id}>{item.name}</li>)}</ul></div></section>
+        <section className="section media-split" id="facilities" aria-labelledby="facilities-title"><figure><img src={assetUrl(copy.facilities.image)} alt={copy.facilities.imageAlt} width="1440" height="810" loading="lazy" decoding="async" /><figcaption>{copy.imageDisclaimer}</figcaption></figure><div><p className="eyebrow">{copy.facilities.eyebrow}</p><h2 id="facilities-title">{copy.facilities.title}</h2><p>{copy.facilities.body}</p><ul className="feature-list">{propertyData.facilities.map((item) => <li key={item.id}>{item.name}</li>)}</ul></div></section>
 
         <section className="section location-section" id="location" aria-labelledby="location-title"><div><p className="eyebrow">{copy.location.eyebrow}</p><h2 id="location-title">{copy.location.title}</h2><p>{copy.location.body}</p><strong>{propertyData.location.marketingArea}</strong></div><Placeholder label={copy.location.placeholder} /></section>
 
