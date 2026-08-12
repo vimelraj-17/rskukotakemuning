@@ -19,9 +19,10 @@ interface GuidedSelectorProps {
   dataLabel: string
   dataNotice: string
   projectName: string
+  whatsAppNumber: string
 }
 
-export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice, projectName }: GuidedSelectorProps) {
+export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice, projectName, whatsAppNumber }: GuidedSelectorProps) {
   const initial = useMemo(() => readSelectionFromSearch(window.location.search, layouts, packages, units) ?? readSavedSelection(layouts, packages, units), [layouts, packages, units])
   const [step, setStep] = useState<1 | 2 | 3 | 4>(initial.unitId ? 4 : initial.packageId ? 2 : 1)
   const [layoutId, setLayoutId] = useState<string | null>(initial.layoutId)
@@ -167,7 +168,7 @@ export function GuidedSelector({ layouts, packages, units, dataLabel, dataNotice
             <div className="selector-controls"><button className="selector-back" type="button" onClick={() => setStep(2)}><span aria-hidden="true">←</span> Back</button><button className="selector-next" type="button" disabled={!unitId} onClick={() => setStep(4)}>Review selection <span aria-hidden="true">→</span></button></div>
           </div>
         ) : selectedLayout && selectedPackage && selectedUnit ? (
-          <SelectionSummary projectName={projectName} layout={selectedLayout} packageDefinition={selectedPackage} unit={selectedUnit} onEditLayout={() => setStep(1)} onEditPackage={() => setStep(2)} onEditUnit={() => setStep(3)} onCopy={copySummary} copyStatus={copyStatus} />
+          <SelectionSummary projectName={projectName} layout={selectedLayout} packageDefinition={selectedPackage} unit={selectedUnit} onEditLayout={() => setStep(1)} onEditPackage={() => setStep(2)} onEditUnit={() => setStep(3)} onCopy={copySummary} copyStatus={copyStatus} phoneNumber={whatsAppNumber} configurationUrl={createShareUrl({ layoutId, packageId, unitId }, window.location)} />
         ) : null}
       </div>
     </section>

@@ -1,10 +1,14 @@
 import { useMemo, useState } from 'react'
 import { formatMyr } from '../utils/formatMyr'
 import { calculateMortgage, parseMortgageInput } from '../utils/mortgage'
+import { WhatsAppEnquiry } from './WhatsAppEnquiry'
+import type { WhatsAppEnquiry as EnquiryDetails } from '../utils/whatsapp'
 
 interface MortgageCalculatorProps {
   propertyPrice: number
   packagePrice: number
+  phoneNumber: string
+  enquiry: Omit<EnquiryDetails, 'estimatedTotalPrice' | 'estimatedMonthlyPayment'>
 }
 
 const assumptionsStorageKey = 'residensi-lestari-mortgage-assumptions-v1'
@@ -22,7 +26,7 @@ function readAssumptions() {
   }
 }
 
-export function MortgageCalculator({ propertyPrice: selectedPropertyPrice, packagePrice: selectedPackagePrice }: MortgageCalculatorProps) {
+export function MortgageCalculator({ propertyPrice: selectedPropertyPrice, packagePrice: selectedPackagePrice, phoneNumber, enquiry }: MortgageCalculatorProps) {
   const [propertyDraft, setPropertyDraft] = useState({ source: selectedPropertyPrice, value: String(selectedPropertyPrice) })
   const [packageDraft, setPackageDraft] = useState({ source: selectedPackagePrice, value: String(selectedPackagePrice) })
   const [assumptions, setAssumptions] = useState(readAssumptions)
@@ -57,5 +61,6 @@ export function MortgageCalculator({ propertyPrice: selectedPropertyPrice, packa
       {estimate ? <dl className="mortgage-results" aria-live="polite"><div><dt>Total estimated purchase price</dt><dd>{formatMyr(estimate.totalPurchasePrice)}</dd></div><div><dt>Loan amount</dt><dd>{formatMyr(estimate.loanAmount)}</dd></div><div><dt>Estimated down payment</dt><dd>{formatMyr(estimate.downPayment)}</dd></div><div className="mortgage-primary"><dt>Estimated monthly payment</dt><dd>{formatMyr(estimate.monthlyPayment)}</dd></div><div><dt>Estimated total interest</dt><dd>{formatMyr(estimate.totalInterest)}</dd></div></dl> : <div className="mortgage-error" role="alert"><strong>Enter valid calculator values.</strong><p>Prices and rates cannot be negative. Loan margin must be 0–100%, and tenure must be 1–50 years.</p></div>}
     </div>
     <aside className="mortgage-disclaimer"><strong>Illustration only — not a loan offer.</strong><p>Bank approval, effective rates, insurance, legal fees and other charges may differ. Confirm all financing terms with an authorised bank or representative.</p></aside>
+    <WhatsAppEnquiry phoneNumber={phoneNumber} enquiry={estimate ? { ...enquiry, estimatedTotalPrice: formatMyr(estimate.totalPurchasePrice), estimatedMonthlyPayment: formatMyr(estimate.monthlyPayment) } : null} />
   </section>
 }

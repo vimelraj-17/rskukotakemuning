@@ -5,7 +5,7 @@ import { propertyData } from '../data/propertyData'
 import { selectionStorageKey } from '../utils/selection'
 
 function renderSelector() {
-  return render(<GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} units={propertyData.units} dataLabel={propertyData.metadata.label} dataNotice={propertyData.metadata.notice} projectName={propertyData.project.name} />)
+  return render(<GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} units={propertyData.units} dataLabel={propertyData.metadata.label} dataNotice={propertyData.metadata.notice} projectName={propertyData.project.name} whatsAppNumber={propertyData.project.whatsAppNumber} />)
 }
 
 describe('GuidedSelector', () => {
@@ -143,5 +143,25 @@ describe('GuidedSelector', () => {
     renderSelector()
     expect(screen.getByRole('heading', { name: 'Choose your package' })).toBeInTheDocument()
     expect(screen.queryByText('bad')).not.toBeInTheDocument()
+  })
+
+  it('includes the current selection and mortgage estimate in WhatsApp', () => {
+    window.history.replaceState({}, '', '/?layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+    renderSelector()
+    const link = screen.getByRole('link', { name: /Enquire on WhatsApp/i })
+    const url = new URL(link.getAttribute('href')!)
+    expect(url.origin + url.pathname).toBe('https://wa.me/60172062979')
+    const message = decodeURIComponent(url.searchParams.get('text')!)
+    expect(message).toContain('Residensi Lestari Fasa 2')
+    expect(message).toContain('Unit ID: DEMO-B-01-01')
+    expect(message).toContain('Block B, Level 1')
+    expect(message).toContain('1,000 sq ft layout, 1,000 sq ft')
+    expect(message).toContain('Package A Upgrade')
+    expect(message).toMatch(/Estimated total price: RM\s*288,000/)
+    expect(message).toMatch(/Estimated monthly mortgage payment: RM\s*1,179/)
+    expect(message).toContain('Please confirm the current availability')
+    expect(message).toContain('layout=layout-1000&package=a-upgrade&unit=DEMO-B-01-01')
+    expect(link).toHaveAttribute('target', '_blank')
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   })
 })

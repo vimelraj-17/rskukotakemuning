@@ -17,7 +17,8 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: 'Set within the Kota Kemuning area.' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'A preliminary Rumah Selangorku check.' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Let’s find the right home for you.' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Start a WhatsApp conversation/ })).toHaveAttribute('href', 'https://wa.me/60172062979')
+    expect(screen.getByRole('button', { name: /Start a WhatsApp conversation/ })).toBeDisabled()
+    expect(screen.queryByRole('link', { name: /Start a WhatsApp conversation/ })).not.toBeInTheDocument()
   })
 
   it('exposes useful image alternatives and missing-media placeholders', () => {

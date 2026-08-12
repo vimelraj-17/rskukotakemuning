@@ -6,7 +6,6 @@ import { siteCopy } from './data/siteCopy'
 import { formatMyr } from './utils/formatMyr'
 import { assetUrl } from './utils/assetUrl'
 
-const whatsAppUrl = `https://wa.me/${propertyData.project.whatsAppNumber.replace('+', '')}`
 const basicPackages = propertyData.packages.filter((item) => item.type === 'Basic')
 const upgradePackages = propertyData.packages.filter((item) => item.type === 'Upgrade')
 const startingPrice = Math.min(...basicPackages.map((item) => item.basePriceMyr))
@@ -46,9 +45,9 @@ export function App() {
 
         <section className="section eligibility-section" id="eligibility" aria-labelledby="eligibility-title"><div className="section-heading narrow"><p className="eyebrow">{copy.eligibility.eyebrow}</p><h2 id="eligibility-title">{copy.eligibility.title}</h2></div><ol className="eligibility-grid">{propertyData.eligibilityRequirements.map((item, index) => <li key={item.id}><span>{index + 1}</span><div><h3>{item.title}</h3><p>{item.description}</p></div></li>)}</ol><p className="disclaimer"><strong>Important:</strong> {copy.eligibility.disclaimer}</p></section>
 
-        <GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} units={propertyData.units} dataLabel={propertyData.metadata.label} dataNotice={propertyData.metadata.notice} projectName={propertyData.project.name} />
+        <GuidedSelector layouts={propertyData.layouts} packages={propertyData.packages} units={propertyData.units} dataLabel={propertyData.metadata.label} dataNotice={propertyData.metadata.notice} projectName={propertyData.project.name} whatsAppNumber={propertyData.project.whatsAppNumber} />
 
-        <section className="contact-section" id="contact" aria-labelledby="contact-title"><p className="eyebrow eyebrow--light">{copy.contact.eyebrow}</p><h2 id="contact-title">{copy.contact.title}</h2><p>{copy.contact.body}</p><a className="button button--gold" href={whatsAppUrl} target="_blank" rel="noreferrer">{copy.contact.action} <span aria-hidden="true">↗</span></a></section>
+        <section className="contact-section" id="contact" aria-labelledby="contact-title"><p className="eyebrow eyebrow--light">{copy.contact.eyebrow}</p><h2 id="contact-title">{copy.contact.title}</h2><p>{copy.contact.body} Complete the guided selection above to generate an enquiry with the correct project details.</p><button className="button button--gold" type="button" disabled>{copy.contact.action}</button></section>
       </main>
       <footer className="site-footer"><div className="footer-brand"><span>{propertyData.project.brandMark}</span><strong>{propertyData.project.name}</strong></div><nav aria-label="Footer navigation">{copy.navigation.slice(0, 4).map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav><p>Information is subject to final confirmation and approval. © {new Date().getFullYear()} {propertyData.project.shortName}.</p></footer>
     </div>
